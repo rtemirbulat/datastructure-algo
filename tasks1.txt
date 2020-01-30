@@ -38,6 +38,7 @@ int main()
 
 	//delete array
 }
+// Diagonal is equal to n, other num-s equal to n-k;
 
 2.  4x4 matrix with num: 
 
@@ -45,6 +46,96 @@ int main()
 3 4 3 2
 2 3 4 3
 1 2 3 4 
+
+/*#include <iostream>
+#include <malloc.h>
+
+using namespace std;
+int main()
+{
+	const int numTwo = 2;
+	const int numThree = 1;
+	int n;
+	cin >> n;
+	int** arr;
+	arr = new int* [n];
+	for (int i = 0; i < n; i++)
+		arr[i] = new int[n];
+	for (int i = 0; i < n; i++)
+	{
+		for (int j = 0; j < n; j++)
+		{
+			if (n % 2!=0) // if number is odd 
+			{
+				arr
+			}
+		}
+	}
+
+	//print 
+	for (int i = 0; i < n; i++)
+	{
+		for (int j = 0; j < n; j++)
+		{
+			cout << arr[i][j] << " ";
+		}
+		cout << endl;
+	}
+
+	//delete array
+}
+*/
+
+
+#include <iostream>
+
+using namespace std;
+
+int main() {
+    int** arr, n;
+    cin >> n;
+    arr = new int* [n];
+    for (int i = 0; i < n; i++)
+        arr[i] = new int[n];
+    int edge = n, num = 1;
+    for (int j = 0; j < edge; j++) {
+        //заполнение вправо
+        for (int i = j; i < edge; i++)
+        {
+            arr[j][i] = num;
+            num++;
+        }
+        //заполнение вниз
+        for (int i = j + 1; i < edge; i++)
+        {
+            arr[i][edge - 1] = num;
+            num++;
+        }
+        //заполнение влево 
+        for (int i = edge - 2; i >= j; i--)
+        {
+            arr[edge - 1][i] = num;
+            num++;
+        }
+        //заполнение вверх 
+        for (int i = edge - 2; i >= j + 1; i--) 
+        {
+            arr[i][j] = num;
+            num++;
+        }
+        edge--;
+    }
+    for (int l = 0; l < n; l++) {
+        for (int k = 0; k < n; k++) {
+            cout << arr[l][k];
+            if (k != n - 1) cout << " ";
+        }
+        if (l != n - 1) cout << endl;
+    }
+    return 0;
+}
+
+
 
 3. 3x3 matrix 
 9 8 7 
@@ -57,3 +148,7 @@ int main()
 11 2   1  6 19
 12 3   4  5 18
 13 14 15 16 17
+
+
+
+
