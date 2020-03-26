@@ -1,0 +1,253 @@
+
+package com.company;
+import java.util.Scanner;
+public class Main {
+
+    public static void main(String[] args) {
+       // Matrix matrix = new Matrix(3,3);
+        Matrix a = new Matrix(4,2);
+        Matrix b = new Matrix(2,4);
+        Scanner sc = new Scanner("System.in");
+        //11111
+        //a.randomize();
+        a.fill();
+        a.print();
+        //22222
+        //b.randomize();
+        b.fill();
+        b.print();
+       /* Matrix sum = Matrix.plus(a,b);
+        sum.print();*/
+        Matrix res = Matrix.times(a,b);
+        res.print();
+
+        /*
+        Matrix inv = Matrix.inverse(b);
+        Matrix identity = Matrix.times(inv,matrix);
+        inversed.print();
+        identity.print();*/
+    }
+}
+
+
+package com.company;
+import org.jetbrains.annotations.NotNull;
+
+import java.util.Scanner;
+public class Matrix {
+
+    private int n;
+    private int m;
+    private double[][] matrix;
+    public Matrix(int n,int m)
+    {
+        this.n = n;
+        this.m = m;
+        this.matrix = new double[n][m];
+    }
+
+    public int getN() {
+        return n;
+    }
+
+    public void setN(int n) {
+        this.n = n;
+    }
+
+    public int getM() {
+        return m;
+    }
+
+    public void setM(int m) {
+        this.m = m;
+    }
+
+    public double[][] getMatrix() {
+        return matrix;
+    }
+
+    public void setMatrix(double[][] matrix) {
+        this.matrix = matrix;
+    }
+    //import java.util.Scanner
+   // Scanner sc = new Scanner("System.in");
+    public void fill(){
+        Scanner in = new Scanner(System.in);
+        for (int i = 0; i < this.n; i++) {
+            for (int j = 0; j < this.m; j++) {
+                this.matrix[i][j] = in.nextInt();
+            }
+        }
+    }
+
+    public static boolean isSquareMatrix(Matrix obj){
+        if(obj.n == obj.m) return true;
+        else return false;
+    }
+    public static int getDim(Matrix obj){
+        int dim = 0;
+        if(isSquareMatrix(obj)){
+            dim = obj.n;
+        }
+        return dim;
+    }
+    public Matrix(int n, int m, double[][] matrix)
+    {
+        this.n = n;
+        this.m = m;
+        this.matrix = matrix;
+    }
+    public void randomize(){
+        System.out.println("Filling array with random n-s");
+        for (int i = 0; i < this.n ; i++) {
+            for (int j = 0; j < this.m; j++) {
+                this.matrix[i][j] = (int)((Math.random())*10);
+            }
+        }
+    }
+    public void print(){
+        System.out.println("");
+        for (int i = 0; i < n ; i++) {
+            System.out.println(" ");
+            for (int j = 0; j < m; j++) {
+                System.out.print(matrix[i][j] + " ");
+            }
+        }
+        System.out.println("");
+    }
+    public static boolean isSameSize(Matrix a, Matrix b)
+    {
+        return a.n == b.n && a.m == b.m;
+    }
+    public static Matrix plus (Matrix a,Matrix b)
+    {
+        double[][] temp = new double[a.n][a.m];
+        if (isSameSize(a, b))
+        {
+            for (int i = 0; i < a.n; i++)
+            {
+                for(int j = 0; j < a.m; j++)
+                {
+                    temp[i][j] = a.matrix[i][j] + b.matrix[i][j];
+                }
+            }
+            return new Matrix(a.n, a.m, temp);
+        }
+        else throw new IllegalArgumentException("Cant do this operation");
+    }
+    public static Matrix minus (Matrix a, Matrix b)
+    {
+        double[][]temp = new double [a.n][a.m];
+        if (isSameSize(a, b))
+        {
+            for (int i = 0; i < a.n; i++)
+            {
+                for (int j = 0; j < a.m; j++)
+                {
+                    temp[i][j] = a.matrix[i][j] - b.matrix[i][j];
+                }
+            }
+            return new Matrix(a.n, a.m, temp);
+        }
+        else throw new IllegalArgumentException("Cant do this operation");
+    }
+    public static Matrix times(Matrix a,Matrix b)
+    {
+        double[][] temp = new double [a.n][b.m];
+        if (a.m == b.n)
+        {
+            for(int i = 0; i < a.n; i++)
+            {
+                for(int j = 0; j < b.m; j++)
+                {
+                    for(int k = 0; k < b.n; k++)
+                    {
+                        temp[i][j] += a.matrix[i][k] * b.matrix[k][j];
+                    }
+                }
+            }
+            return new Matrix(a.n, b.m, temp);
+        }
+        else throw new IllegalArgumentException("Cant do this operation");
+    }
+    public static Matrix times(double a, Matrix b)
+    {
+        double[][] temp = new double[b.n][b.m];
+        for(int i = 0; i < b.n; i++)
+        {
+            for (int j = 0; j < b.m; j++)
+            {
+                temp[i][j] = a * b.matrix[i][j];
+            }
+        }
+        return new Matrix(b.n, b.m, temp);
+    }
+    public static Matrix minor(Matrix a,int x,int y)
+    {
+        double[][] submatrix = new double[a.n-1][a.m-1];
+        int k = 0;
+        for (int i = 0; i < a.n; i++)
+        {
+            int l = 0;
+            if (i == x)
+            {
+                k++;
+                continue;
+            }
+            for(int j = 0; j<a.m; j++)
+            {
+                if (j == y) l++;
+                else submatrix[i-k][j-l] = a.matrix[i][j];
+            }
+        }
+        return new Matrix(a.n-1, a.m-1, submatrix);
+    }
+    public static double determinant(Matrix a)
+    {
+        if(a.n == 1 && a.m == 1) return a.matrix[a.n-1][a.m -1];
+        else
+        {
+            double det = 0;
+            int sign = -1;
+            for(int i = 0; i < a.n; i++)
+            {
+                det += Math.pow(sign,i)*a.matrix[0][i] * determinant(minor(a, 0, i));
+            }
+            return det;
+        }
+    }
+    public static Matrix transpose(Matrix a)
+    {
+        double[][] temp = new double[a.n][a.m];
+        int sign = 1;
+        for(int i = 0; i < a.n; i++)
+        {
+            if(i%2==0) sign = 1;
+            else sign = -1;
+            for(int j = 0; j < a.m; j++)
+            {
+                temp[i][j] = sign * determinant(minor(a,j,i));
+                sign *= -1;
+            }
+        }
+        return new Matrix(a.n, a.m,temp);
+    }
+    public static boolean isInvertible(Matrix obj){
+        double det = determinant(obj);
+        if (det != 0) return true;
+        else return false;
+    }
+    public static Matrix inverse(Matrix a)
+    {
+        double det = 1 / determinant(a);
+        return times(det,transpose(a));
+    }
+
+    public static Matrix divide(Matrix a, Matrix b)
+    {
+        double[][] temp = new double[a.n][a.m];
+        return times(a,inverse(b));
+    }
+}
+
+
